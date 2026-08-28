@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Guerra das Letras</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #222;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 30px;
+        }
+
+        #botaoIniciar {
+            padding: 15px 40px;
+            font-size: 22px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #arena {
+            position: relative;
+            width: 800px;
+            height: 200px;
+            margin: 40px auto;
+            background: #555;
+            border: 5px solid white;
+            overflow: hidden;
+        }
+
+        .extremo {
+            position: absolute;
+            top: 0;
+            width: 20px;
+            height: 100%;
+        }
+
+        #esquerda {
+            left: 0;
+            background: rgb(255, 0, 0);
+        }
+
+        #direita {
+            right: 0;
+            background: rgb(64, 0, 255);
+        }
+
+        .jogador {
+            position: absolute;
+            top: 70px;
+            width: 60px;
+            height: 60px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 35px;
+            font-weight: bold;
+            border-radius: 10px;
+            color: white;
+        }
+
+        #A {
+            left: 330px;
+            background: rgb(255, 68, 0);
+        }
+
+        #B {
+            left: 410px;
+            background: rgb(55, 0, 255);
+        }
+
+        #mensagem {
+            font-size: 25px;
+            margin-top: 20px;
+        }
+
+        #botoesJogadores {
+            display: flex;
+            justify-content: space-between;
+            width: 800px;
+            max-width: calc(100% - 20px);
+            margin-right: auto;
+            margin-left: auto;
+            margin-top: 20px;
+        }
+
+        .botaoJogador {
+            width: 120px;
+            padding: 12px;
+            border: 0;
+            border-radius: 8px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #botaoA {
+            background: rgb(255, 68, 0);
+        }
+
+        #botaoB {
+            background: rgb(55, 0, 255);
+        }
+
+        #controles {
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>⚔️ GUERRA DAS Letras ⚔️</h1>
+
+    <button id="botaoIniciar" type="button">INICIAR</button>
+
+    <div id="controles">
+        <p>
+            🔵 A: clique no A ou use Q W A S
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            🔴 B: clique no B ou use Ç O L P
+        </p>
+        <p style="font-size: 16px; margin-top: -10px; color: #ddd;">
+            Regra: pressione e solte a tecla para empurrar. Segurar a tecla não vale.
+        </p>
+    </div>
+
+    <div id="arena">
+
+        <div id="esquerda" class="extremo"></div>
+        <div id="direita" class="extremo"></div>
+
+        <div id="A" class="jogador">A</div>
+        <div id="B" class="jogador">B</div>
+
+    </div>
+
+    <div id="botoesJogadores">
+        <button id="botaoA" class="botaoJogador" type="button">BOTÃO A</button>
+        <button id="botaoB" class="botaoJogador" type="button">BOTÃO B</button>
+    </div>
+
+    <div id="mensagem">
+        Clique em INICIAR para começar!
+    </div>
+
+    <script src="guerra-das-letras.js"></script>
+
+</body>
+
+</html>
+
