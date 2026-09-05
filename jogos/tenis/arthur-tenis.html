@@ -1,0 +1,226 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Arthur Tennis</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #263b75,
+                    #080d1d 70%
+                );
+
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            margin: 15px 0 5px;
+
+            font-size: 42px;
+            letter-spacing: 2px;
+
+            text-shadow:
+                0 0 10px #00eaff,
+                0 0 25px #0066ff;
+        }
+
+        #info {
+            margin: 5px 0 10px;
+
+            font-size: 17px;
+            font-weight: bold;
+
+            text-align: center;
+        }
+
+        #jogo {
+            width: 900px;
+            height: 600px;
+
+            max-width: 96vw;
+            height: auto;
+
+            border: 5px solid white;
+            border-radius: 15px;
+
+            background: #075c3c;
+
+            box-shadow:
+                0 0 15px #00eaff,
+                0 0 40px rgba(0, 100, 255, 0.5);
+
+            touch-action: none;
+        }
+
+        #botoes {
+            margin-top: 12px;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+        }
+
+        .linha {
+            display: flex;
+            justify-content: center;
+        }
+
+        .controle {
+            width: 65px;
+            height: 55px;
+
+            margin: 4px;
+
+            border: 2px solid white;
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    #3d4b68,
+                    #111827
+                );
+
+            color: white;
+
+            font-size: 27px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 4px 8px #000;
+        }
+
+        .controle:hover {
+            background: #52627f;
+        }
+
+        .controle:active {
+            transform: scale(0.92);
+            background: #00a844;
+        }
+
+        #botaoIniciar,
+        #botaoSair {
+            margin: 8px;
+
+            padding: 12px 30px;
+
+            border: 2px solid white;
+            border-radius: 10px;
+
+            color: white;
+
+            font-size: 18px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            box-shadow: 0 4px 12px #000;
+        }
+
+        #botaoIniciar {
+            background:
+                linear-gradient(
+                    #00d9ff,
+                    #0055ff
+                );
+        }
+
+        #botaoSair {
+            background:
+                linear-gradient(
+                    #ff4d4d,
+                    #b50000
+                );
+        }
+
+        #botaoIniciar:hover,
+        #botaoSair:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🎾 ARTHUR TENNIS</h1>
+
+    <div id="info">
+        Clique em INICIAR ou aperte A
+    </div>
+
+    <button id="botaoIniciar">
+        ▶️ INICIAR
+    </button>
+
+    <canvas
+        id="jogo"
+        width="900"
+        height="600">
+    </canvas>
+
+    <div id="botoes">
+
+        <div class="linha">
+            <button
+                class="controle"
+                id="botaoCima">
+                ⬆️
+            </button>
+        </div>
+
+        <div class="linha">
+
+            <button
+                class="controle"
+                id="botaoEsquerda">
+                ⬅️
+            </button>
+
+            <button
+                class="controle"
+                id="botaoBaixo">
+                ⬇️
+            </button>
+
+            <button
+                class="controle"
+                id="botaoDireita">
+                ➡️
+            </button>
+
+        </div>
+
+    </div>
+
+    <button
+        id="botaoSair"
+        onclick="sair()">
+        🚪 SAIR
+    </button>
+
+    <script src="arthur-tenis.js"></script>
+
+</body>
+</html>
+```

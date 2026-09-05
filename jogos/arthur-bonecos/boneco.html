@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Arthur Bonecos</title>
+	<style>
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			overflow: hidden;
+			background: #8ec8e9;
+			color: #ffffff;
+			font-family: "Trebuchet MS", sans-serif;
+		}
+
+		canvas { display: block; }
+
+		#hud {
+			position: fixed;
+			z-index: 2;
+			top: 18px;
+			left: 18px;
+			padding: 10px 14px;
+			background: rgba(10, 27, 45, 0.78);
+			border: 2px solid rgba(255, 255, 255, 0.72);
+			border-radius: 6px;
+			font-weight: bold;
+			pointer-events: none;
+		}
+
+		#npcMessage {
+			position: fixed;
+			z-index: 2;
+			right: 18px;
+			bottom: 18px;
+			max-width: min(360px, calc(100% - 36px));
+			padding: 12px 16px;
+			background: rgba(255, 255, 255, 0.92);
+			border: 2px solid #173c59;
+			border-radius: 6px;
+			color: #173c59;
+			font-weight: bold;
+			opacity: 0;
+			transition: opacity 0.2s ease;
+			pointer-events: none;
+		}
+
+		#npcMessage.visible { opacity: 1; }
+
+		#wardrobe {
+			position: fixed;
+			z-index: 4;
+			right: 18px;
+			top: 18px;
+			display: none;
+			width: min(300px, calc(100% - 36px));
+			padding: 16px;
+			background: #fff8ea;
+			border: 3px solid #743d26;
+			border-radius: 8px;
+			color: #3a241c;
+		}
+
+		#wardrobe.visible { display: block; }
+		#wardrobe h2 { margin: 0 0 8px; font-size: 22px; }
+		.outfit-option { width: 100%; margin-top: 8px; background: #2f75c9; }
+		#carShowroom {
+			position: fixed;
+			z-index: 4;
+			left: 18px;
+			top: 80px;
+			display: none;
+			width: min(300px, calc(100% - 36px));
+			padding: 16px;
+			background: #eff8ff;
+			border: 3px solid #245b91;
+			border-radius: 8px;
+			color: #173c59;
+		}
+
+		#carShowroom.visible { display: block; }
+		#carShowroom h2 { margin: 0 0 8px; font-size: 22px; }
+		.car-option { width: 100%; margin-top: 8px; background: #245b91; }
+
+		#startScreen {
+			position: fixed;
+			inset: 0;
+			z-index: 3;
+			display: grid;
+			place-items: center;
+			background: rgba(8, 25, 40, 0.82);
+		}
+
+		#startPanel {
+			width: min(440px, calc(100% - 32px));
+			padding: 28px;
+			text-align: center;
+			background: #163c58;
+			border: 3px solid #ffffff;
+			border-radius: 8px;
+			box-shadow: 10px 10px 0 #0d2232;
+		}
+
+		h1 { margin: 0 0 12px; font-size: 32px; }
+		p { margin: 8px 0; line-height: 1.45; }
+
+		button {
+			margin-top: 18px;
+			padding: 12px 20px;
+			border: 2px solid #ffffff;
+			border-radius: 5px;
+			background: #f47828;
+			color: #ffffff;
+			font: inherit;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		button:hover { background: #ff9b52; }
+
+		#touchControls {
+			position: fixed;
+			z-index: 3;
+			inset: auto 16px 16px;
+			display: none;
+			justify-content: space-between;
+			align-items: end;
+			pointer-events: none;
+		}
+
+		#touchControls.visible { display: flex; }
+
+		.touch-pad { display: grid; grid-template-columns: repeat(3, 58px); gap: 6px; pointer-events: auto; }
+		.touch-button {
+			width: 58px;
+			height: 58px;
+			margin: 0;
+			padding: 0;
+			border-radius: 50%;
+			background: rgba(24, 68, 99, 0.86);
+			font-size: 24px;
+			touch-action: none;
+		}
+		.touch-button:active { background: #f47828; }
+		.touch-up { grid-column: 2; }
+		.touch-left { grid-column: 1; grid-row: 2; }
+		.touch-down { grid-column: 2; grid-row: 2; }
+		.touch-right { grid-column: 3; grid-row: 2; }
+		.touch-jump { width: 72px; height: 72px; pointer-events: auto; font-size: 28px; }
+
+		#commandBar {
+			position: fixed;
+			z-index: 3;
+			left: 50%;
+			bottom: 16px;
+			display: none;
+			max-width: calc(100% - 32px);
+			gap: 7px;
+			justify-content: center;
+			flex-wrap: wrap;
+			transform: translateX(-50%);
+			pointer-events: auto;
+		}
+
+		#commandBar.visible { display: flex; }
+		.command-button { margin: 0; padding: 9px 12px; background: rgba(18, 57, 84, 0.9); font-size: 14px; }
+		.command-button.jump { background: #e96d2c; }
+
+		@media (pointer: coarse) {
+			#commandBar { bottom: 96px; }
+			#hud { max-width: calc(100% - 36px); font-size: 12px; }
+		}
+	</style>
+</head>
+<body>
+	<div id="hud">WASD: mover | Espaço: pular | Q: agarrar | E: entrar | T: dirigir carro | R: automático | U: montar ou guardar carro | F: sair do carro | Esc: sair</div>
+	<div id="npcMessage" aria-live="polite"></div>
+	<aside id="wardrobe" aria-label="Escolher roupa">
+		<h2>Loja de Roupas</h2>
+		<button class="outfit-option" data-outfit="azul" type="button">Conjunto azul</button>
+		<button class="outfit-option" data-outfit="vermelho" type="button">Conjunto vermelho</button>
+		<button class="outfit-option" data-outfit="verde" type="button">Conjunto verde</button>
+		<button class="outfit-option" data-outfit="preto" type="button">Conjunto preto</button>
+		<button class="outfit-option" data-outfit="roxo" type="button">Conjunto roxo</button>
+		<button class="outfit-option" data-outfit="amarelo" type="button">Conjunto amarelo</button>
+		<button class="outfit-option" data-outfit="rosa" type="button">Conjunto rosa</button>
+		<button class="outfit-option" data-outfit="laranja" type="button">Conjunto laranja</button>
+		<button class="outfit-option" data-outfit="cinza" type="button">Conjunto cinza</button>
+		<button class="outfit-option" data-outfit="turquesa" type="button">Conjunto turquesa</button>
+	</aside>
+	<aside id="carShowroom" aria-label="Escolher carro grátis">
+		<h2>Carros Grátis</h2>
+		<button class="car-option" data-car-color="#d94a3d" type="button">Carrinho vermelho</button>
+		<button class="car-option" data-car-color="#2f75c9" type="button">Carrinho azul</button>
+		<button class="car-option" data-car-color="#e0a131" type="button">Carrinho amarelo</button>
+		<button class="car-option" data-car-color="#3f9c5a" type="button">Carrinho verde</button>
+		<button class="car-option" data-car-color="#8b4cb8" type="button">Carrinho roxo</button>
+		<button class="car-option" data-car-color="#e25d9c" type="button">Carrinho rosa</button>
+		<button class="car-option" data-car-color="#f17b2d" type="button">Carrinho laranja</button>
+		<button class="car-option" data-car-color="#6f7884" type="button">Carrinho cinza</button>
+		<button class="car-option" data-car-color="#e9eef2" type="button">Carrinho branco</button>
+		<button class="car-option" data-car-color="#222831" type="button">Carrinho preto</button>
+		<button class="car-option" data-car-color="#39b9b2" type="button">Carrinho turquesa</button>
+		<button class="car-option" data-car-color="#9b5b32" type="button">Carrinho marrom</button>
+		<button class="car-option" data-car-color="#d2bc45" type="button">Carrinho dourado</button>
+		<button class="car-option" data-car-color="#cb554d" type="button">Carrinho coral</button>
+		<button class="car-option" data-car-color="#4e8c6a" type="button">Carrinho esmeralda</button>
+	</aside>
+	<nav id="touchControls" aria-label="Controles de toque">
+		<div class="touch-pad">
+			<button class="touch-button touch-up" data-key="KeyW" aria-label="Ir para frente" type="button">▲</button>
+			<button class="touch-button touch-left" data-key="KeyD" aria-label="Ir para esquerda" type="button">◀</button>
+			<button class="touch-button touch-down" data-key="KeyS" aria-label="Ir para trás" type="button">▼</button>
+			<button class="touch-button touch-right" data-key="KeyA" aria-label="Ir para direita" type="button">▶</button>
+		</div>
+		<button class="touch-button touch-jump" data-key="Space" aria-label="Pular" type="button">↑</button>
+	</nav>
+	<nav id="commandBar" aria-label="Comandos do jogo">
+		<button class="command-button jump" data-command="jump" type="button">Pular</button>
+		<button class="command-button" data-command="camera" type="button">Controlar câmera</button>
+		<button class="command-button" data-command="talk" type="button">Falar com pessoas</button>
+		<button class="command-button" data-command="climb" type="button">Agarrar (C)</button>
+		<button class="command-button" data-command="enter" type="button">Entrar</button>
+		<button class="command-button" data-command="drive" type="button">Dirigir</button>
+		<button class="command-button" data-command="automatic" type="button">Automático</button>
+		<button class="command-button" data-command="store" type="button">Montar/Guardar</button>
+		<button class="command-button" data-command="leave" type="button">Sair do carro</button>
+		<button class="command-button" data-command="twoPlayers" type="button">2 jogadores</button>
+		<button class="command-button" data-command="exit" type="button">Sair</button>
+	</nav>
+	<main id="startScreen">
+		<section id="startPanel">
+			<h1>Arthur Bonecos</h1>
+			<p>Use WASD para andar, mova o mouse para olhar e aperte Espaço para pular.</p>
+			<p>Esc desbloqueia o mouse; pressionar Esc novamente volta para Arthur Jogos.</p>
+			<button id="startButton" type="button">Jogar</button>
+		</section>
+	</main>
+
+	<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+	<script src="./boneco.js"></script>
+</body>
+</html>

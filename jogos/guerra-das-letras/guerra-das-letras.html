@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Guerra das Letras</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #232423;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 30px;
+        }
+
+        #botaoIniciar {
+            padding: 15px 40px;
+            font-size: 22px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #botaoIniciarIA {
+            padding: 15px 30px;
+            font-size: 22px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-left: 10px;
+            background: #1b9cfc;
+            color: white;
+            border: 0;
+            border-radius: 8px;
+        }
+
+        #botaoIniciarIADificil {
+            padding: 15px 26px;
+            font-size: 22px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-left: 10px;
+            background: #b30000;
+            color: white;
+            border: 0;
+            border-radius: 8px;
+        }
+
+        #botaoIniciarIAImpossivel {
+            padding: 15px 18px;
+            font-size: 22px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-left: 10px;
+            background: #7a00ff;
+            color: white;
+            border: 0;
+            border-radius: 8px;
+        }
+
+        #arena {
+            position: relative;
+            width: 800px;
+            height: 200px;
+            margin: 40px auto;
+            background: #7a797e;
+            border: 5px solid rgb(255, 255, 255);
+            overflow: hidden;
+        }
+
+        .extremo {
+            position: absolute;
+            top: 0;
+            width: 20px;
+            height: 100%;
+        }
+
+        #esquerda {
+            left: 0;
+            background: rgb(255, 0, 0);
+        }
+
+        #direita {
+            right: 0;
+            background: rgb(64, 0, 255);
+        }
+
+        .jogador {
+            position: absolute;
+            top: 70px;
+            width: 60px;
+            height: 60px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 35px;
+            font-weight: bold;
+            border-radius: 10px;
+            color: white;
+        }
+
+        #A {
+            left: 330px;
+            background: rgb(255, 68, 0);
+        }
+
+        #B {
+            left: 410px;
+            background: rgb(55, 0, 255);
+        }
+
+        #mensagem {
+            font-size: 25px;
+            margin-top: 20px;
+        }
+
+        #botoesJogadores {
+            display: flex;
+            justify-content: space-between;
+            width: 800px;
+            max-width: calc(100% - 20px);
+            margin-right: auto;
+            margin-left: auto;
+            margin-top: 20px;
+        }
+
+        .botao-voltar {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 18px;
+            background: #ff4400;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .botao-voltar:hover {
+            background: #ff6a33;
+        }
+
+        .botaoJogador {
+            width: 120px;
+            padding: 12px;
+            border: 0;
+            border-radius: 8px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #botaoA {
+            background: rgb(255, 68, 0);
+        }
+
+        #botaoB {
+            background: rgb(55, 0, 255);
+        }
+
+        #botaoBoostA,
+        #botaoBoostB {
+            width: 140px;
+            padding: 12px;
+            border: 0;
+            border-radius: 8px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        #botaoBoostA {
+            background: #ff7a00;
+        }
+
+        #botaoBoostB {
+            background: #2f59ff;
+        }
+
+        #controles {
+            font-size: 18px;
+        }
+
+        #botoesMoveis {
+            display: none;
+            margin-top: 30px;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .dpad-container {
+            display: grid;
+            grid-template-columns: 60px 60px 60px;
+            grid-template-rows: 60px 60px 60px;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .botao-direcao {
+            width: 60px;
+            height: 60px;
+            border: 0;
+            border-radius: 8px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #555;
+            transition: background 0.1s;
+        }
+
+        .botao-direcao:active {
+            background: #888;
+            transform: scale(0.95);
+        }
+
+        #botaoCima {
+            grid-column: 2;
+            grid-row: 1;
+            background: #ff7a00;
+        }
+
+        #botaoBaixo {
+            grid-column: 2;
+            grid-row: 3;
+            background: #2f59ff;
+        }
+
+        #botaoEsquerda {
+            grid-column: 1;
+            grid-row: 2;
+            background: #2f59ff;
+        }
+
+        #botaoDireita {
+            grid-column: 3;
+            grid-row: 2;
+            background: #ff4400;
+        }
+
+        @media (max-width: 768px) {
+            #botoesMoveis {
+                display: flex;
+            }
+
+            #botoesJogadores {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <a class="botao-voltar" href="../../arthur-jogos.html">VOLTAR</a>
+
+    <h1>⚔️ GUERRA DAS Letras ⚔️</h1>
+
+    <button id="botaoIniciar" type="button">INICIAR</button>
+    <button id="botaoIniciarIA" type="button">INICIAR COM IA</button>
+    <button id="botaoIniciarIADificil" type="button">INICIAR COM IA DIFÍCIL</button>
+    <button id="botaoIniciarIAImpossivel" type="button">INICIAR COM IA IMPOSSÍVEL</button>
+
+    <div id="controles">
+        <p>
+            🔵 A: clique no A ou use Q W A S
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            🔴 B: clique no B ou use Ç O L P
+        </p>
+        <p style="font-size: 16px; margin-top: -10px; color: #ddd;">
+            Regra: pressione e solte a tecla para empurrar. Segurar a tecla não vale.
+        </p>
+        <p style="font-size: 14px; margin-top: 5px; color: #aaa;">
+            📱 No celular: use os botões de direção!
+        </p>
+    </div>
+
+    <div id="arena">
+
+        <div id="esquerda" class="extremo"></div>
+        <div id="direita" class="extremo"></div>
+
+        <div id="A" class="jogador">A</div>
+        <div id="B" class="jogador">B</div>
+
+    </div>
+
+    <div id="botoesJogadores">
+        <button id="botaoA" class="botaoJogador" type="button">BOTÃO A</button>
+        <button id="botaoB" class="botaoJogador" type="button">BOTÃO B</button>
+    </div>
+
+    <div id="botoesBoost">
+        <button id="botaoBoostA" type="button">BOOST A</button>
+        <button id="botaoBoostB" type="button">BOOST B</button>
+    </div>
+
+    <div id="botoesMoveis">
+        <div class="dpad-container">
+            <button id="botaoCima" class="botao-direcao" type="button">⬆️</button>
+            <button id="botaoEsquerda" class="botao-direcao" type="button">⬅️</button>
+            <button id="botaoDireita" class="botao-direcao" type="button">➡️</button>
+            <button id="botaoBaixo" class="botao-direcao" type="button">⬇️</button>
+        </div>
+    </div>
+
+    <div id="mensagem">
+        Clique em INICIAR para começar!
+    </div>
+
+    <script src="guerra-das-letras.js"></script>
+
+</body>
+
+</html>
+
