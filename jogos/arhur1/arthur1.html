@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#133c78">
+  <title>Arthur 1 — O Portal Mágico</title>
+  <style>
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #133c78; color: white; }
+    .screen { min-height: 100vh; min-height: 100svh; display: grid; place-items: center; position: relative; overflow: hidden; padding: 24px; isolation: isolate; }
+    .screen::before { content: ""; position: absolute; inset: 0; z-index: -2; background: radial-gradient(circle at 75% 20%, #ffffff55, transparent 32%), linear-gradient(#1687d8, #74d9ee 75%, #c4f3ef); }
+    .screen::after { content: ""; position: absolute; bottom: -18vh; left: -15%; width: 130%; height: 42vh; border-radius: 50% 50% 0 0; background: #36ad60; box-shadow: 0 -25px 0 #72d77b; z-index: -1; }
+    .menu-content { text-align: center; padding-bottom: 8vh; }
+    h1 { margin: 0 0 48px; font-size: clamp(80px, 17vw, 200px); line-height: .95; letter-spacing: -.06em; color: #ffe36b; -webkit-text-stroke: 3px #183e75; text-shadow: 0 8px 0 #183e75, 0 16px 24px #14375d55; }
+    button { font-family: inherit; font-weight: 900; cursor: pointer; border: 3px solid #17432f; border-radius: 20px; color: #123c29; background: #a3f36f; box-shadow: 0 7px 0 #17432f; padding: 18px 64px; font-size: clamp(28px, 5vw, 40px); transition: transform .15s, box-shadow .15s; }
+    button:hover { background: #c0ff8f; transform: translateY(-2px); }
+    button:active { transform: translateY(5px); box-shadow: 0 2px 0 #17432f; }
+    button:focus-visible { outline: 4px solid white; outline-offset: 8px; }
+    .cloud { position: absolute; width: 160px; height: 45px; background: #ffffffaa; border-radius: 50px; z-index: -1; }
+    .cloud::before { content: ""; position: absolute; width: 75px; height: 75px; left: 30px; bottom: 0; border-radius: 50%; background: inherit; }
+    .cloud-one { top: 18%; left: 6%; }
+    .cloud-two { top: 30%; right: 5%; transform: scale(.7); }
+    .game-content { text-align: center; }
+    h2 { font-size: clamp(48px, 10vw, 90px); margin: 0 0 24px; text-shadow: 0 4px 0 #183e75; }
+    .game-content p { font-size: 22px; color: #123c59; font-weight: 700; }
+    #backButton { font-size: 20px; padding: 14px 28px; margin-top: 24px; }
+    #gameScreen { background: #101526; padding: 16px; }
+    #gameScreen::before, #gameScreen::after { display: none; }
+    .game-content { width: min(960px, 100%); }
+    #stageTitle { font-size: clamp(24px, 5vw, 40px); margin-bottom: 14px; }
+    #world { display: block; width: 100%; aspect-ratio: 16 / 9; background: #19243b; border: 3px solid #ffe36b; border-radius: 16px; }
+    .game-content #dialogue { color: #fff; font-size: clamp(16px, 3vw, 21px); line-height: 1.5; min-height: 3em; margin: 16px 0; }
+    .game-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+    .game-actions button { font-size: 18px; padding: 12px 24px; margin: 0 !important; }
+    .touch-controls {
+      position: fixed; left: env(safe-area-inset-left, 0px);
+      bottom: max(20px, env(safe-area-inset-bottom)); z-index: 10;
+      display: grid; grid-template-columns: repeat(2, 64px); gap: 10px;
+    }
+    .touch-controls button { touch-action: none; font-size: 24px; padding: 12px 0; user-select: none; }
+    .touch-controls [data-control="jump"] { grid-column: 1 / -1; grid-row: 1; font-size: 20px; }
+    .touch-controls [data-control="left"] { grid-column: 1; grid-row: 2; }
+    .touch-controls [data-control="right"] { grid-column: 2; grid-row: 2; }
+    #gameScreen:has(.touch-controls:not([hidden])) { padding-bottom: 170px; }
+    .subtitle { font-size: clamp(20px, 4vw, 32px); font-weight: 800; color: #183e75; margin: -20px 0 36px; }
+    .capoeira-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 18px 0; }
+    .capoeira-controls button { font-size: 16px; padding: 12px 16px; touch-action: none; }
+    .typing-panel { padding: 20px; margin: 16px 0; background: #20334b; border: 2px solid #ffe36b; border-radius: 16px; text-align: left; }
+    .typing-panel label { display: block; font-weight: bold; margin-bottom: 10px; }
+    #typingPhrase { font-size: clamp(22px, 4vw, 32px); color: #ffe36b; margin: 12px 0; }
+    #typingInput { width: 100%; padding: 14px; border: 2px solid #a9d2e3; border-radius: 10px; font: 20px Arial, sans-serif; }
+    #typingInput:focus { outline: 3px solid #ffe36b; outline-offset: 2px; }
+    #typingTimer { display: block; margin-top: 12px; color: #fff; }
+    .libras-help { color: #d8e7f1; font-size: 14px; line-height: 1.5; text-align: center; margin: 18px 0; }
+    @media (prefers-reduced-motion: reduce) { button { transition: none; } }
+  </style>
+  <script src="capoeira.js" defer></script>
+  <script src="runner.js" defer></script>
+  <script src="city.js" defer></script>
+  <script src="classroom.js" defer></script>
+  <script src="arthur1.js" defer></script>
+</head>
+<body>
+  <main>
+    <section id="menuScreen" class="screen" aria-labelledby="gameTitle">
+      <div class="cloud cloud-one" aria-hidden="true"></div>
+      <div class="cloud cloud-two" aria-hidden="true"></div>
+      <div class="menu-content">
+        <h1 id="gameTitle">Arthur 1</h1>
+        <p class="subtitle">O Portal Mágico</p>
+        <button id="playButton" type="button">Jogar</button>
+      </div>
+    </section>
+    <section id="gameScreen" class="screen" aria-labelledby="stageTitle" hidden>
+      <div class="game-content">
+        <h2 id="stageTitle" tabindex="-1">O Portal Mágico</h2>
+        <canvas id="world" width="960" height="540" role="img" aria-label="Cena da aventura de Arthur"></canvas>
+        <p id="dialogue" aria-live="polite"></p>
+        <p id="librasHelp" class="libras-help">Libras: abra o botão azul de acessibilidade à direita e clique no texto do diálogo para o avatar traduzir. Precisa de internet.</p>
+        <div id="typingPanel" class="typing-panel" hidden>
+          <label for="typingInput">Digite a frase para conversar com Reverso:</label>
+          <div id="typingPhrase"></div>
+          <input id="typingInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="typingPhrase typingTimer">
+          <output id="typingTimer"></output>
+        </div>
+        <div id="capoeiraControls" class="capoeira-controls" aria-label="Movimentos de capoeira" hidden>
+          <button type="button" data-capoeira="crouch">S · Agachar</button>
+          <button type="button" data-capoeira="meia">J · Meia-lua</button>
+          <button type="button" data-capoeira="rasteira">K · Rasteira</button>
+          <button type="button" data-capoeira="armada">L · Armada / Especial</button>
+          <button type="button" data-capoeira="music">E · Berimbau</button>
+        </div>
+        <div class="game-actions">
+          <button id="nextButton" type="button">Continuar →</button>
+          <button id="narratorButton" type="button" aria-pressed="true">Narração: ligada</button>
+          <button id="replayNarration" type="button">Ouvir novamente</button>
+          <button id="backButton" type="button">Voltar ao menu</button>
+        </div>
+        <div id="touchControls" class="touch-controls" aria-label="Controles da caverna" hidden>
+          <button type="button" data-control="jump">Pular ↑</button>
+          <button type="button" data-control="left" aria-label="Andar para a esquerda">←</button>
+          <button type="button" data-control="right" aria-label="Andar para a direita">→</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- O widget oficial inicia automaticamente e traduz os textos selecionados. -->
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js" defer
+    onerror="document.getElementById('librasHelp').textContent = 'O VLibras não carregou. Confira sua conexão e recarregue a página para tentar novamente.'"></script>
+</body>
+</html>
