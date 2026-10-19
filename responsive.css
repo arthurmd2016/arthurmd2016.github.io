@@ -1,0 +1,5 @@
+/* Follow the device viewport in either orientation; do not lock or rotate content. */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+.arthur-media-page { overflow-wrap: anywhere; }
+.arthur-media-page img, .arthur-media-page video { max-width: 100%; height: auto; }
+.arthur-media-page iframe { max-width: 100%; }

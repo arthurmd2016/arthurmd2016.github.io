@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arthur Mundos</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"}}</script>
+<link rel="stylesheet" href="../../responsive.css">
+</head>
+<body>
+  <canvas id="world" aria-label="Cidade 3D do Arthur Mundos"></canvas>
+  <header><div class="brand"><strong>ARTHUR <span>MUNDOS</span></strong><button id="peopleButton">★ Pessoas</button></div><a class="exit-game" href="../../arthur-jogos.html">Sair</a><button id="menu" hidden>Menu</button></header>
+  <section id="cover"><div class="card"><p>UMA CIDADE PARA EXPLORAR</p><h1>Arthur<br><span>Mundos</span></h1><p>Seu boneco azul, lojas de roupa e prédios.<br>Entre e passeie pelo seu mundo!</p><button id="start">Iniciar</button><button id="onlineButton">Online e amigos</button><p id="status" role="status">W/A/D ou setas · Espaço: pular · S: agachar para andar · Arraste para olhar</p></div></section>
+  <div id="controls" hidden aria-label="Controles do personagem">
+    <div id="joystick" role="group" aria-label="Analógico: arraste para andar em qualquer direção"><span id="joystickStick"></span></div>
+    <div class="movement-actions"><button data-key="Crouch" aria-label="Segure para agachar">Agachar</button><button data-key="Jump" aria-label="Pular (Espaço)">Pular</button></div>
+  </div>
+  <p id="hint" hidden>W/A/D e setas · Espaço: pular · S: agachar · Arraste para olhar · Role para aproximar</p>
+  <button id="interact" hidden>Entrar no prédio</button>
+  <button id="climb" hidden>Escalar prédio</button>
+  <button id="quickChat" hidden>🎤 Falar</button>
+  <p id="interactionStatus" role="status"></p>
+  <aside id="voiceHud" hidden aria-label="Chat rápido"><button id="voiceMic" type="button" aria-pressed="false">🎤 Ativar microfone</button><select id="voicePerson" aria-label="Escolher pessoa"></select><section class="voice-conversation"><strong>Conversa</strong><div id="voiceConversation" role="log" aria-label="Conversa com a pessoa escolhida" aria-live="polite"></div></section><p id="voiceDraft" aria-label="Mensagem em preparação"></p><p id="voiceHudStatus" role="status" aria-live="polite" hidden></p></aside><div id="gameInvite" hidden></div>
+  <div id="messageNotice" hidden>Opa! Apareceu uma mensagem.</div>
+  <aside id="quest" hidden aria-live="polite"></aside>
+  <div id="questButtons" hidden><button id="pauseQuest">Parar desafio</button><button id="saveQuest">Salvar desafio</button></div>
+  <details id="cityMap" open hidden><summary>Mapa 2D</summary><canvas id="mapCanvas" width="300" height="300" aria-label="Mapa da cidade: sua posição, Mano, prédios, lojas e portais"></canvas><p id="mapLocation">Você está na cidade</p><small>▲ Você · M Mano<br>■ Prédios · ◆ Lojas<br>Vermelho: minigames · Verde: desafio</small></details>
+  <dialog id="colors" aria-labelledby="colorTitle">
+    <h2 id="colorTitle">Sua cor, seu boneco</h2>
+    <p id="colorHelp">Gire o analógico para mudar a tonalidade. Use as setas para ajustar a saturação e o brilho.</p>
+    <div class="color-workspace">
+      <div id="colorWheel" aria-label="Círculo de tonalidades">
+        <span id="hueDot" class="color-dot"></span>
+        <div id="colorSquare" tabindex="0" role="group" aria-label="Saturação e brilho: use as setas" aria-describedby="colorHelp"><span id="svDot" class="color-dot"></span></div>
+      </div>
+      <div class="color-inputs">
+        <div><div id="colorStick" tabindex="0" role="slider" aria-label="Analógico de tonalidade" aria-valuemin="0" aria-valuemax="360"><span></span></div><small>Analógico · tonalidade<br>Teclado: A / D</small></div>
+        <div><div class="color-arrows"><button data-color-direction="up" aria-label="Aumentar brilho">▲</button><button data-color-direction="left" aria-label="Diminuir saturação">◀</button><button data-color-direction="down" aria-label="Diminuir brilho">▼</button><button data-color-direction="right" aria-label="Aumentar saturação">▶</button></div><small>← → Saturação · ↑ ↓ Brilho</small></div>
+      </div>
+    </div>
+    <div id="colorSwatch">Prévia da cor <output id="colorReadout"></output></div>
+    <label>Escolher cor <input id="colorPicker" type="color" value="#1579ff"></label>
+    <label>Hexadecimal <input id="hexColor" value="#1579ff" maxlength="7" pattern="#[0-9a-fA-F]{6}" spellcheck="false"></label>
+    <label>Matiz <input id="hue" type="range" min="0" max="360" value="214"></label>
+    <label>Saturação <input id="saturation" type="range" min="0" max="100" value="92"></label>
+    <label>Brilho <input id="value" type="range" min="0" max="100" value="100"></label>
+    <div><button id="saveColor">Usar cor</button><button id="cancelColor">Cancelar</button></div>
+  </dialog>
+  <dialog id="onlinePanel"><button id="onlineClose" class="closeDialog">Fechar</button><h2>★ Pessoas</h2><form id="accountForm"><p>Escolha somente seu nome. Sua fotinho será criada automaticamente e não precisa de senha.</p><label>Nome <input id="onlineName" maxlength="20" autocomplete="nickname" required></label><button>Criar conta</button></form><section id="onlineLobby" hidden><div id="myProfile"></div><p id="roomStatus"></p><div id="onlinePlayers"></div><section id="chat"><h3>Conversar</h3><p>Diga: <strong>Arthur, dois pontos, vamos jogar</strong>. Use o nome de qualquer pessoa online.</p><p id="voiceStatus" role="status" aria-live="polite"></p><label>Mandar para <select id="chatPlayer"></select></label><textarea id="chatText" maxlength="1000" placeholder="Escreva sua mensagem"></textarea><div><button id="talkMessage" type="button">🎤 Falar</button><button id="sendMessage" type="button">OK — enviar</button></div><div id="chatMessages" aria-live="polite"></div></section></section></dialog>
+  <script type="module" src="online.js"></script>
+  <script type="module">
+    import('./game.js').catch(error => {
+      document.getElementById('status').textContent='Não foi possível abrir o jogo. Abra a pasta por um servidor local (Live Server).';
+      document.getElementById('start').disabled=true;
+      console.error(error);
+    });
+  </script>
+</body>
+</html>
